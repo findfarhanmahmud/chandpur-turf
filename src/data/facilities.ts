@@ -1,28 +1,138 @@
+import type { LucideIcon } from "lucide-react";
+import {
+  Armchair,
+  Bath,
+  Cake,
+  CarFront,
+  Cctv,
+  Cross,
+  DoorOpen,
+  Footprints,
+  GlassWater,
+  Goal,
+  Handshake,
+  Lightbulb,
+  MapPin,
+  Moon,
+  Phone,
+  ShieldCheck,
+  Shirt,
+  Sprout,
+  Trophy,
+  Volleyball,
+  Wifi,
+} from "lucide-react";
+
 export interface Facility {
-  icon: string;
+  icon: LucideIcon;
   label: string;
+  description: string;
 }
 
 export const facilities: Facility[] = [
-  { icon: 'grass',             label: 'FIFA QUALITY PRO 47MM ARTIFICIAL TURF' },
-  { icon: 'tungsten',          label: 'HIGH-POWER LED FLOODLIGHTS' },
-  { icon: 'sports_soccer',     label: 'PREMIUM MATCH FOOTBALLS AVAILABLE' },
-  { icon: 'sports_martial_arts', label: 'PROFESSIONAL GOALPOSTS, GLOVES & NETS' },
-  { icon: 'styler',            label: 'TRAINING KIT & EQUIPMENT' },
-  { icon: 'checkroom',         label: 'SPACIOUS CHANGING ROOM' },
-  { icon: 'wc',                label: 'WASHROOM FACILITY' },
-  { icon: 'water_drop',        label: 'PURE DRINKING WATER' },
-  { icon: 'chair',             label: 'PLAYER & SPECTATOR SEATING AREA' },
-  { icon: 'local_parking',     label: 'SECURE PARKING FACILITY' },
-  { icon: 'videocam',          label: '24/7 CCTV SURVEILLANCE' },
-  { icon: 'health_and_safety', label: 'SAFE & CLEAN ENVIRONMENT' },
-  { icon: 'mode_night',        label: 'NIGHT MATCH FACILITY' },
-  { icon: 'wifi',              label: 'FREE WI-FI' },
-  { icon: 'emoji_events',      label: 'TOURNAMENT & LEAGUE HOSTING' },
-  { icon: 'handshake',         label: 'FRIENDLY MATCHES & CORPORATE EVENTS' },
-  { icon: 'cake',              label: 'BIRTHDAY PARTIES & PRIVATE BOOKINGS' },
-  { icon: 'directions_run',    label: 'FOOTBALL TRAINING SESSIONS' },
-  { icon: 'medical_services',  label: 'FIRST AID KIT AVAILABLE' },
-  { icon: 'location_on',       label: 'EASY-TO-REACH PRIME LOCATION' },
-  { icon: 'contact_phone',     label: 'ONLINE & PHONE BOOKING AVAILABLE' },
+  {
+    icon: Sprout,
+    label: "FIFA Quality Pro Turf",
+    description: "International standard 47mm artificial football surface.",
+  },
+  {
+    icon: Lightbulb,
+    label: "High-Power LED Floodlights",
+    description: "Crystal-clear floodlights for day and night play.",
+  },
+  {
+    icon: Volleyball,
+    label: "Premium Match Footballs",
+    description: "Top-quality footballs available for every session.",
+  },
+  {
+    icon: Goal,
+    label: "Professional Goalposts & Nets",
+    description: "Full-size goalposts, gloves, and nets included.",
+  },
+  {
+    icon: Shirt,
+    label: "Training Kit & Equipment",
+    description: "Complete training kit and match equipment on site.",
+  },
+  {
+    icon: DoorOpen,
+    label: "Spacious Changing Room",
+    description: "Clean, private changing facilities for players.",
+  },
+  {
+    icon: Bath,
+    label: "Washroom Facility",
+    description: "Modern, hygienic washrooms at your convenience.",
+  },
+  {
+    icon: GlassWater,
+    label: "Pure Drinking Water",
+    description: "Free purified drinking water available all day.",
+  },
+  {
+    icon: Armchair,
+    label: "Player & Spectator Seating",
+    description: "Comfortable seating for players and spectators.",
+  },
+  {
+    icon: CarFront,
+    label: "Secure Parking Facility",
+    description: "Ample, secure parking right next to the turf.",
+  },
+  {
+    icon: Cctv,
+    label: "24/7 CCTV Surveillance",
+    description: "Fully monitored premises for total security.",
+  },
+  {
+    icon: ShieldCheck,
+    label: "Safe & Clean Environment",
+    description: "A safe, well-maintained space to play.",
+  },
+  {
+    icon: Moon,
+    label: "Night Match Facility",
+    description: "Late-night matches under brilliant floodlights.",
+  },
+  {
+    icon: Wifi,
+    label: "Free Wi-Fi",
+    description: "Stay connected with complimentary high-speed Wi-Fi.",
+  },
+  {
+    icon: Trophy,
+    label: "Tournament & League Hosting",
+    description: "Professional hosting for tournaments and leagues.",
+  },
+  {
+    icon: Handshake,
+    label: "Corporate & Friendly Events",
+    description: "Friendly matches and corporate event bookings.",
+  },
+  {
+    icon: Cake,
+    label: "Birthday Parties & Private Booking",
+    description: "Celebrate with private turf bookings and parties.",
+  },
+  {
+    icon: Footprints,
+    label: "Football Training Sessions",
+    description: "Structured training sessions for all skill levels.",
+  },
+  {
+    icon: Cross,
+    label: "First Aid Kit Available",
+    description: "On-site first aid kit for complete player safety.",
+  },
+  {
+    icon: MapPin,
+    label: "Easy-to-Reach Prime Location",
+    description: "Conveniently located in the heart of Chandpur.",
+  },
+  {
+    icon: Phone,
+    label: "Online & Phone Booking",
+    description: "Book instantly online or by a simple phone call.",
+  },
 ];
