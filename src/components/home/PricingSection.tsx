@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import SectionHeading from "@/components/shared/SectionHeading";
+import { slotsByCategory, categoryConfig, SLOT_DURATION_MINUTES } from "@/data/slots";
+import type { SlotCategory } from "@/types/booking";
+import { formatPrice } from "@/lib/utils";
 
 interface SlotRow {
   time: string;
@@ -120,7 +123,7 @@ function SlotCard({
               fontWeight: 400,
             }}
           >
-            / 60 MIN
+            / {SLOT_DURATION_MINUTES} MIN
           </span>
         </p>
       </div>
@@ -192,36 +195,21 @@ function SlotCard({
   );
 }
 
-const morningSlots: SlotRow[] = [
-  { time: "5:00 AM – 6:00 AM",   price: "৳1,999" },
-  { time: "6:00 AM – 7:00 AM",   price: "৳1,999" },
-  { time: "7:00 AM – 8:00 AM",   price: "৳1,999" },
-  { time: "8:00 AM – 9:00 AM",   price: "৳1,999" },
-];
+const CARD_STYLES: Record<SlotCategory, {
+  headerBg: string;
+  priceBg: string;
+  iconColor: string;
+}> = {
+  day: { headerBg: "#c3f400", priceBg: "#1f2800", iconColor: "#283500" },
+  night: { headerBg: "#111622", priceBg: "#0c0f17", iconColor: "#ffffff" },
+};
 
-const daySlots: SlotRow[] = [
-  { time: "9:00 AM – 10:00 AM",  price: "৳1,499" },
-  { time: "10:00 AM – 11:00 AM", price: "৳1,499" },
-  { time: "11:00 AM – 12:00 PM", price: "৳1,499" },
-  { time: "12:00 PM – 1:00 PM",  price: "৳1,499" },
-  { time: "1:00 PM – 2:00 PM",   price: "৳1,499" },
-  { time: "2:00 PM – 3:00 PM",   price: "৳1,499" },
-  { time: "3:00 PM – 4:00 PM",   price: "৳1,499" },
-  { time: "4:00 PM – 5:00 PM",   price: "৳1,499" },
-];
-
-const nightSlots: SlotRow[] = [
-  { time: "5:00 PM – 6:00 PM",   price: "৳2,499" },
-  { time: "6:00 PM – 7:00 PM",   price: "৳2,499" },
-  { time: "7:00 PM – 8:00 PM",   price: "৳2,499" },
-  { time: "8:00 PM – 9:00 PM",   price: "৳2,499" },
-  { time: "9:00 PM – 10:00 PM",  price: "৳2,499" },
-  { time: "10:00 PM – 11:00 PM", price: "৳2,499" },
-  { time: "11:00 PM – 12:00 AM", price: "৳2,499" },
-  { time: "12:00 AM – 1:00 AM",  price: "৳2,499" },
-  { time: "1:00 AM – 2:00 AM",   price: "৳2,499" },
-  { time: "2:00 AM – 3:00 AM",   price: "৳2,499" },
-];
+function buildSlotRows(category: SlotCategory): SlotRow[] {
+  return slotsByCategory[category].map((slot) => ({
+    time: `${slot.time} – ${slot.endTime}`,
+    price: formatPrice(slot.price),
+  }));
+}
 
 export default function PricingSection() {
   return (
@@ -237,65 +225,20 @@ export default function PricingSection() {
       <div style={{ maxWidth: "1536px", margin: "0 auto" }}>
         <SectionHeading
           title="SLOT TIMING & PRICING"
-          subtitle="(60 MINUTES)"
+          subtitle={`(${SLOT_DURATION_MINUTES} MINUTES)`}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* Morning Card */}
-          <SlotCard
-            title="Morning Slot"
-            icon="wb_twilight"
-            priceDisplay="৳1,999"
-            slots={morningSlots}
-            headerBg="#1a2b16"
-            priceBg="#142211"
-            iconColor="#ffffff"
-            footer={
-              <div
-                className="flex items-center gap-3 p-3 rounded border"
-                style={{
-                  backgroundColor: "#121414",
-                  borderColor: "rgba(68,73,51,0.5)",
-                }}
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "36px",
-                    color: "#c3f400",
-                    fontVariationSettings: "'FILL' 1",
-                  }}
-                >
-                  timer
-                </span>
-                <p
-                  className="italic leading-tight uppercase"
-                  style={{
-                    fontFamily: "var(--font-oswald)",
-                    fontSize: "18px",
-                    color: "#ffffff",
-                  }}
-                >
-                  60 Minutes Of
-                  <br />
-                  Pure Football
-                  <br />
-                  Experience!
-                </p>
-              </div>
-            }
-          />
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Day Card (featured) */}
           <SlotCard
-            title="Day Slot"
-            icon="light_mode"
-            priceDisplay="৳1,499"
-            slots={daySlots}
+            title={categoryConfig.day.label}
+            icon={categoryConfig.day.icon}
+            priceDisplay={formatPrice(categoryConfig.day.price)}
+            slots={buildSlotRows("day")}
             isFeatured
-            headerBg="#c3f400"
-            priceBg="#1f2800"
-            iconColor="#283500"
+            headerBg={CARD_STYLES.day.headerBg}
+            priceBg={CARD_STYLES.day.priceBg}
+            iconColor={CARD_STYLES.day.iconColor}
             footer={
               <Link
                 href="/booking"
@@ -316,13 +259,13 @@ export default function PricingSection() {
 
           {/* Night Card */}
           <SlotCard
-            title="Night Slot"
-            icon="dark_mode"
-            priceDisplay="৳2,499"
-            slots={nightSlots}
-            headerBg="#111622"
-            priceBg="#0c0f17"
-            iconColor="#ffffff"
+            title={categoryConfig.night.label}
+            icon={categoryConfig.night.icon}
+            priceDisplay={formatPrice(categoryConfig.night.price)}
+            slots={buildSlotRows("night")}
+            headerBg={CARD_STYLES.night.headerBg}
+            priceBg={CARD_STYLES.night.priceBg}
+            iconColor={CARD_STYLES.night.iconColor}
           />
         </div>
       </div>

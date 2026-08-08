@@ -309,7 +309,7 @@ export default function ContactContent() {
               Monday – Sunday (7 Days a Week)
             </p>
             <p className="font-jetbrains text-primary-container font-semibold text-sm">
-              5:00 AM – 3:00 AM (Including Night Floodlight Matches)
+              5:00 AM – 3:30 AM (Including Night Floodlight Matches)
             </p>
           </div>
         </div>

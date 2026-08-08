@@ -191,7 +191,7 @@ export default function AboutContent() {
             Chandpur Turf was built with a single mission: to provide football enthusiasts, youth academies, and local teams in Chandpur Sadar with an elite, professional-grade playing surface accessible 7 days a week.
           </p>
           <p className="font-work-sans text-on-surface-variant text-base leading-relaxed">
-            Whether you&apos;re getting together for a casual 60-minute friendly match after work, organizing a competitive neighborhood tournament, or hosting a private corporate event, Chandpur Turf offers an unparalleled sports experience.
+            Whether you&apos;re getting together for a casual 90-minute friendly match after work, organizing a competitive neighborhood tournament, or hosting a private corporate event, Chandpur Turf offers an unparalleled sports experience.
           </p>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
@@ -400,8 +400,8 @@ export default function AboutContent() {
               color: "#c4c9ac",
             }}
           >
-            Book your 60-minute slot now and experience Chandpur&apos;s best football surface —
-            morning, day, or night.
+            Book your 90-minute slot now and experience Chandpur&apos;s best football surface —
+            day or night.
           </p>
 
           <div className="mt-9 flex flex-wrap justify-center gap-4">

@@ -1,67 +1,60 @@
 import type { TimeSlot, SlotCategory } from '@/types/booking';
 
-// Morning slots: 5AM–9AM @ ৳1,999
-const morningSlots: TimeSlot[] = [
-  { id: 'm-5', time: '5:00 AM', endTime: '6:00 AM', price: 1999, category: 'morning', isBooked: false },
-  { id: 'm-6', time: '6:00 AM', endTime: '7:00 AM', price: 1999, category: 'morning', isBooked: false },
-  { id: 'm-7', time: '7:00 AM', endTime: '8:00 AM', price: 1999, category: 'morning', isBooked: false },
-  { id: 'm-8', time: '8:00 AM', endTime: '9:00 AM', price: 1999, category: 'morning', isBooked: true  },
-];
+export const SLOT_DURATION_MINUTES = 90;
 
-// Day slots: 9AM–5PM @ ৳1,499 (best value)
+// Day slots: 5:00 AM - 5:00 PM @ ৳1,500 (90 minutes each)
 const daySlots: TimeSlot[] = [
-  { id: 'd-9',  time: '9:00 AM',  endTime: '10:00 AM', price: 1499, category: 'day', isBooked: true  },
-  { id: 'd-10', time: '10:00 AM', endTime: '11:00 AM', price: 1499, category: 'day', isBooked: false },
-  { id: 'd-11', time: '11:00 AM', endTime: '12:00 PM', price: 1499, category: 'day', isBooked: false },
-  { id: 'd-12', time: '12:00 PM', endTime: '1:00 PM',  price: 1499, category: 'day', isBooked: false },
-  { id: 'd-13', time: '1:00 PM',  endTime: '2:00 PM',  price: 1499, category: 'day', isBooked: false },
-  { id: 'd-14', time: '2:00 PM',  endTime: '3:00 PM',  price: 1499, category: 'day', isBooked: false },
-  { id: 'd-15', time: '3:00 PM',  endTime: '4:00 PM',  price: 1499, category: 'day', isBooked: false },
-  { id: 'd-16', time: '4:00 PM',  endTime: '5:00 PM',  price: 1499, category: 'day', isBooked: false },
+  { id: 'd-0500', time: '5:00 AM',  endTime: '6:30 AM',  price: 1500, category: 'day', isBooked: false },
+  { id: 'd-0630', time: '6:30 AM',  endTime: '8:00 AM',  price: 1500, category: 'day', isBooked: false },
+  { id: 'd-0800', time: '8:00 AM',  endTime: '9:30 AM',  price: 1500, category: 'day', isBooked: false },
+  { id: 'd-0930', time: '9:30 AM',  endTime: '11:00 AM', price: 1500, category: 'day', isBooked: false },
+  { id: 'd-1100', time: '11:00 AM', endTime: '12:30 PM', price: 1500, category: 'day', isBooked: false },
+  { id: 'd-1230', time: '12:30 PM', endTime: '2:00 PM',  price: 1500, category: 'day', isBooked: false },
+  { id: 'd-1400', time: '2:00 PM',  endTime: '3:30 PM',  price: 1500, category: 'day', isBooked: false },
+  { id: 'd-1530', time: '3:30 PM',  endTime: '5:00 PM',  price: 1500, category: 'day', isBooked: false },
 ];
 
-// Night slots: 5PM–3AM @ ৳2,499
+// Night slots: 5:00 PM - 3:30 AM @ ৳2,000 (90 minutes each)
 const nightSlots: TimeSlot[] = [
-  { id: 'n-17', time: '5:00 PM',   endTime: '6:00 PM',  price: 2499, category: 'night', isBooked: false },
-  { id: 'n-18', time: '6:00 PM',   endTime: '7:00 PM',  price: 2499, category: 'night', isBooked: false },
-  { id: 'n-19', time: '7:00 PM',   endTime: '8:00 PM',  price: 2499, category: 'night', isBooked: false },
-  { id: 'n-20', time: '8:00 PM',   endTime: '9:00 PM',  price: 2499, category: 'night', isBooked: false },
-  { id: 'n-21', time: '9:00 PM',   endTime: '10:00 PM', price: 2499, category: 'night', isBooked: false },
-  { id: 'n-22', time: '10:00 PM',  endTime: '11:00 PM', price: 2499, category: 'night', isBooked: false },
-  { id: 'n-23', time: '11:00 PM',  endTime: '12:00 AM', price: 2499, category: 'night', isBooked: false },
-  { id: 'n-0',  time: '12:00 AM',  endTime: '1:00 AM',  price: 2499, category: 'night', isBooked: false },
-  { id: 'n-1',  time: '1:00 AM',   endTime: '2:00 AM',  price: 2499, category: 'night', isBooked: false },
-  { id: 'n-2',  time: '2:00 AM',   endTime: '3:00 AM',  price: 2499, category: 'night', isBooked: false },
+  { id: 'n-1700', time: '5:00 PM',  endTime: '6:30 PM',  price: 2000, category: 'night', isBooked: false },
+  { id: 'n-1830', time: '6:30 PM',  endTime: '8:00 PM',  price: 2000, category: 'night', isBooked: false },
+  { id: 'n-2000', time: '8:00 PM',  endTime: '9:30 PM',  price: 2000, category: 'night', isBooked: false },
+  { id: 'n-2130', time: '9:30 PM',  endTime: '11:00 PM', price: 2000, category: 'night', isBooked: false },
+  { id: 'n-2300', time: '11:00 PM', endTime: '12:30 AM', price: 2000, category: 'night', isBooked: false },
+  { id: 'n-0030', time: '12:30 AM', endTime: '2:00 AM',  price: 2000, category: 'night', isBooked: false },
+  { id: 'n-0200', time: '2:00 AM',  endTime: '3:30 AM',  price: 2000, category: 'night', isBooked: false },
 ];
 
-export const allSlots: TimeSlot[] = [...morningSlots, ...daySlots, ...nightSlots];
+export const allSlots: TimeSlot[] = [...daySlots, ...nightSlots];
 
 export const slotsByCategory: Record<SlotCategory, TimeSlot[]> = {
-  morning: morningSlots,
   day: daySlots,
   night: nightSlots,
 };
 
-export const categoryConfig: Record<SlotCategory, {
+export interface CategoryConfig {
   label: string;
   icon: string;
   price: number;
+  durationMinutes: number;
+  timeRange: string;
   popular?: boolean;
-}> = {
-  morning: {
-    label: 'Morning Slot',
-    icon: 'wb_twilight',
-    price: 1999,
-  },
+}
+
+export const categoryConfig: Record<SlotCategory, CategoryConfig> = {
   day: {
     label: 'Day Slot',
     icon: 'light_mode',
-    price: 1499,
+    price: 1500,
+    durationMinutes: SLOT_DURATION_MINUTES,
+    timeRange: '5:00 AM - 5:00 PM',
     popular: true,
   },
   night: {
     label: 'Night Slot',
     icon: 'dark_mode',
-    price: 2499,
+    price: 2000,
+    durationMinutes: SLOT_DURATION_MINUTES,
+    timeRange: '5:00 PM - 3:30 AM',
   },
 };

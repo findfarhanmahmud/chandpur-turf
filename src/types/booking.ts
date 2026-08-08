@@ -1,13 +1,13 @@
 // Slot types
-export type SlotCategory = 'morning' | 'day' | 'night';
+export type SlotCategory = 'day' | 'night';
 
 export type BookingStatus = 'Pending';
 
 export interface TimeSlot {
   id: string;
   time: string;          // e.g. "5:00 AM"
-  endTime: string;       // e.g. "6:00 AM"
-  price: number;         // e.g. 1999
+  endTime: string;       // e.g. "6:30 AM"
+  price: number;         // e.g. 1500
   category: SlotCategory;
   isBooked: boolean;
 }
@@ -47,7 +47,7 @@ export interface BookingRecord {
   notes?: string;
   bookingDate: string;       // ISO date, e.g. "2026-08-05"
   slotCategory: SlotCategory;
-  selectedTime: string;      // combined continuous range, e.g. "10:00 AM - 12:00 PM"
+  selectedTime: string;      // combined continuous range, e.g. "5:00 PM - 9:30 PM"
   slotCount: number;
   duration: number;          // minutes
   price: number;             // BDT

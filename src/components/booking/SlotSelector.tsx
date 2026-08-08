@@ -21,7 +21,7 @@ function SlotColumn({
 }) {
   const slots = slotsByCategory[category];
   const config = categoryConfig[category];
-  const isFeatured = category === "day";
+  const isFeatured = Boolean(config.popular);
 
   return (
     <div
@@ -93,7 +93,7 @@ function SlotColumn({
             letterSpacing: "0.06em",
           }}
         >
-          {formatPrice(config.price)} / 60 MINS
+          {formatPrice(config.price)} / {config.durationMinutes} MINS
         </p>
       </div>
 
@@ -257,16 +257,7 @@ export default function SlotSelector({
         selections are combined into a single booking.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <SlotColumn
-          category="morning"
-          selectedSlots={selectedSlots}
-          onSlotSelect={(slot) =>
-            onSlotsChange(
-              toggleSlotSelection(selectedSlots, slot, slotsByCategory[slot.category]),
-            )
-          }
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <SlotColumn
           category="day"
           selectedSlots={selectedSlots}

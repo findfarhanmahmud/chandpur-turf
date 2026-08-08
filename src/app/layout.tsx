@@ -26,7 +26,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Chandpur Turf | Premium Football Experience",
   description:
-    "Book your premium football turf slot at Chandpur Turf. FIFA Quality Pro 47mm artificial turf with high-power LED floodlights. Morning, Day & Night slots available.",
+    "Book your premium football turf slot at Chandpur Turf. FIFA Quality Pro 47mm artificial turf with high-power LED floodlights. Day & Night slots available.",
   keywords: "Chandpur Turf, football turf, book turf, Bangladesh football, artificial turf",
   openGraph: {
     title: "Chandpur Turf | Premium Football Experience",

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { categoryConfig } from "@/data/slots";
+import { formatPrice } from "@/lib/utils";
 
 const quickLinks = [
   { href: "/",        label: "Home" },
@@ -195,29 +197,22 @@ export default function Footer() {
           <div className="lg:col-span-3 flex flex-col">
             <ColumnHeading>Opening Hours</ColumnHeading>
             <div className="flex flex-col gap-2.5 font-work-sans text-xs">
-              <div className="flex justify-between items-center bg-surface-container/60 p-2.5 rounded border border-outline-variant/30">
-                <span className="text-on-surface flex items-center gap-1.5 font-medium">
-                  <span className="material-symbols-outlined text-outline text-base">wb_twilight</span>
-                  Morning Slot
-                </span>
-                <span className="font-bold text-primary font-oswald text-sm">৳1,999</span>
-              </div>
               <div className="flex justify-between items-center bg-primary-container/10 p-2.5 rounded border border-primary-container/40">
                 <span className="text-primary-container flex items-center gap-1.5 font-semibold">
                   <span className="material-symbols-outlined text-primary-container text-base">light_mode</span>
                   Day Slot
                 </span>
-                <span className="font-bold text-primary-container font-oswald text-sm">৳1,499</span>
+                <span className="font-bold text-primary-container font-oswald text-sm">{formatPrice(categoryConfig.day.price)}</span>
               </div>
               <div className="flex justify-between items-center bg-surface-container/60 p-2.5 rounded border border-outline-variant/30">
                 <span className="text-on-surface flex items-center gap-1.5 font-medium">
                   <span className="material-symbols-outlined text-primary-fixed-dim text-base">dark_mode</span>
                   Night Slot
                 </span>
-                <span className="font-bold text-primary font-oswald text-sm">৳2,499</span>
+                <span className="font-bold text-primary font-oswald text-sm">{formatPrice(categoryConfig.night.price)}</span>
               </div>
               <p className="text-[11px] text-on-surface-variant font-jetbrains mt-1">
-                Open 7 days a week: 5:00 AM – 3:00 AM
+                Open 7 days a week: 5:00 AM – 3:30 AM
               </p>
             </div>
 

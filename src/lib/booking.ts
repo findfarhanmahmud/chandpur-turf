@@ -1,7 +1,7 @@
 import { formatDate } from '@/lib/utils';
 import { type BookingRecord, type SlotCategory, type TimeSlot } from '@/types/booking';
 
-export const BOOKING_DURATION_MINUTES = 60;
+export const BOOKING_DURATION_MINUTES = 90;
 export const BOOKING_STATUS = 'Pending' as const;
 
 export interface CreateBookingInput {
@@ -35,7 +35,7 @@ export function createBookingRecord(input: CreateBookingInput): BookingRecord {
   };
 }
 
-// Combines consecutive slots into one continuous range, e.g. "10:00 AM - 12:00 PM".
+// Combines consecutive slots into one continuous range, e.g. "5:00 PM - 9:30 PM".
 export function combineTimeRange(slots: TimeSlot[]): string {
   if (slots.length === 0) return '';
   const first = slots[0];
@@ -70,7 +70,6 @@ export function formatBookingDate(isoDate: string): string {
 }
 
 const SLOT_CATEGORY_LABELS: Record<SlotCategory, string> = {
-  morning: 'Morning',
   day: 'Day',
   night: 'Night',
 };

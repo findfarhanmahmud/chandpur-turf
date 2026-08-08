@@ -22,7 +22,7 @@ export default function BookingSummary({
   const timeDisplay = hasSlots ? combineTimeRange(selectedSlots) : "Select a slot";
   const durationDisplay = hasSlots
     ? `${getTotalDurationMinutes(selectedSlots)} Minutes`
-    : "60 Minutes";
+    : "90 Minutes";
   const priceDisplay = hasSlots ? formatPrice(getTotalPrice(selectedSlots)) : "৳0";
 
   return (

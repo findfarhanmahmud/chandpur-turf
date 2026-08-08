@@ -5,7 +5,7 @@ import BookingPageClient from "@/components/booking/BookingPageClient";
 export const metadata = {
   title: "Book Your Slot | Chandpur Turf",
   description:
-    "Select a date, pick your preferred morning, day, or night slot, and confirm your football turf booking at Chandpur Turf.",
+    "Select a date, pick your preferred day or night slot, and confirm your football turf booking at Chandpur Turf.",
 };
 
 export default function BookingPage() {

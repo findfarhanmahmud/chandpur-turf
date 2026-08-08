@@ -25,7 +25,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Football Match",
     category: "match",
     imageUrl: "https://images.unsplash.com/photo-1553778263-73a83bab9b0c?q=80&w=1200&auto=format&fit=crop",
-    caption: "Competitive 60-minute football matches played with passion and intensity.",
+    caption: "Competitive 90-minute football matches played with passion and intensity.",
   },
   {
     id: "g2",

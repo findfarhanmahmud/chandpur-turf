@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { categoryConfig } from "@/data/slots";
+import { formatPrice } from "@/lib/utils";
 
 export default function HeroSection() {
   return (
@@ -243,45 +245,7 @@ export default function HeroSection() {
                     color: "#c3f400",
                   }}
                 >
-                  ৳1,499
-                </span>
-              </div>
-
-              {/* Morning */}
-              <div
-                className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 py-3 px-3 rounded cursor-pointer transition-colors border border-outline-variant/30 hover:bg-surface-bright/30"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span
-                    className="material-symbols-outlined shrink-0"
-                    style={{
-                      color: "#8e9379",
-                      fontSize: "22px",
-                      fontVariationSettings: "'FILL' 1",
-                    }}
-                  >
-                    wb_twilight
-                  </span>
-                  <span
-                    className="font-medium"
-                    style={{
-                      fontFamily: "var(--font-work-sans)",
-                      fontSize: "15px",
-                      color: "#c4c9ac",
-                    }}
-                  >
-                    Morning Slot
-                  </span>
-                </div>
-                <span
-                  className="font-bold shrink-0 ml-auto"
-                  style={{
-                    fontFamily: "var(--font-oswald)",
-                    fontSize: "20px",
-                    color: "#ffffff",
-                  }}
-                >
-                  ৳1,999
+                  {formatPrice(categoryConfig.day.price)}
                 </span>
               </div>
 
@@ -319,7 +283,7 @@ export default function HeroSection() {
                     color: "#ffffff",
                   }}
                 >
-                  ৳2,499
+                  {formatPrice(categoryConfig.night.price)}
                 </span>
               </div>
             </div>
