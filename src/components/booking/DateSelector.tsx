@@ -1,12 +1,21 @@
 "use client";
 
 import { type DateOption } from "@/types/booking";
-import { getDayLabel, getUpcomingDates } from "@/lib/utils";
-import { useMemo } from "react";
+import { getDayLabel, getUpcomingDates, formatDate } from "@/lib/utils";
+import { useMemo, useState } from "react";
+import Calendar from "@/components/booking/Calendar";
 
 interface DateSelectorProps {
   selectedDate: Date | null;
   onDateSelect: (date: Date) => void;
+}
+
+function sameDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
 }
 
 export default function DateSelector({
@@ -28,6 +37,12 @@ export default function DateSelector({
       disabled: false,
     }));
   }, [today]);
+
+  const [calendarOpen, setCalendarOpen] = useState(false);
+
+  const selectedDateOutsideQuick = selectedDate
+    ? !dates.some((d) => sameDay(d.date, selectedDate))
+    : false;
 
   return (
     <section
@@ -129,27 +144,26 @@ export default function DateSelector({
           );
         })}
 
-        {/* "MORE" button */}
+        {/* "MORE" button - opens full calendar */}
         <button
+          type="button"
+          onClick={() => setCalendarOpen((open) => !open)}
+          aria-expanded={calendarOpen}
+          aria-label={calendarOpen ? "Close calendar" : "Open full calendar"}
           className="flex-shrink-0 flex flex-col items-center justify-center gap-1 transition-colors"
           style={{
             minWidth: "80px",
             padding: "12px",
             borderRadius: "0.5rem",
-            border: "1px solid rgba(68,73,51,0.6)",
-            color: "#8e9379",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "#c3f400";
-            (e.currentTarget as HTMLElement).style.color = "#c3f400";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "rgba(68,73,51,0.6)";
-            (e.currentTarget as HTMLElement).style.color = "#8e9379";
+            border: calendarOpen
+              ? "1px solid #c3f400"
+              : "1px solid rgba(68,73,51,0.6)",
+            color: calendarOpen ? "#c3f400" : "#8e9379",
+            backgroundColor: calendarOpen ? "rgba(195,244,0,0.1)" : "transparent",
           }}
         >
           <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
-            calendar_today
+            {calendarOpen ? "close" : "calendar_today"}
           </span>
           <span
             style={{
@@ -158,10 +172,44 @@ export default function DateSelector({
               letterSpacing: "0.08em",
             }}
           >
-            MORE
+            {calendarOpen ? "CLOSE" : "MORE"}
           </span>
         </button>
       </div>
+
+      {/* Full calendar */}
+      {calendarOpen && (
+        <Calendar
+          selectedDate={selectedDate}
+          minDate={today}
+          onSelect={onDateSelect}
+          onClose={() => setCalendarOpen(false)}
+        />
+      )}
+
+      {/* Clearly display a selection made beyond the quick date cards */}
+      {selectedDate && selectedDateOutsideQuick && !calendarOpen && (
+        <div
+          className="mt-4 flex items-center gap-2"
+          style={{
+            fontFamily: "var(--font-jetbrains)",
+            fontSize: "11px",
+            letterSpacing: "0.06em",
+            color: "#c4c9ac",
+          }}
+        >
+          <span
+            className="material-symbols-outlined"
+            style={{ fontSize: "14px", color: "#c3f400" }}
+          >
+            event
+          </span>
+          <span>SELECTED DATE:</span>
+          <strong style={{ color: "#c3f400", fontSize: "12px" }}>
+            {formatDate(selectedDate)}
+          </strong>
+        </div>
+      )}
     </section>
   );
 }

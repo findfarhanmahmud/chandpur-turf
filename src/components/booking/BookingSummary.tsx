@@ -26,33 +26,34 @@ export default function BookingSummary({
   const priceDisplay = hasSlots ? formatPrice(getTotalPrice(selectedSlots)) : "৳0";
 
   return (
-    <div className="relative">
-      <div
-        className="sticky top-[100px] rounded-xl border p-6 shadow-2xl flex flex-col"
+    <div
+      className="sticky top-[100px] rounded-xl border p-6 shadow-2xl flex flex-col overflow-hidden"
+      style={{
+        backgroundColor: "#282a2b",
+        borderColor: "rgba(68,73,51,0.5)",
+        maxHeight: "calc(100vh - 132px)",
+      }}
+    >
+      <h3
+        className="shrink-0 border-b pb-3 mb-6 uppercase flex items-center gap-2"
         style={{
-          backgroundColor: "#282a2b",
+          fontFamily: "var(--font-oswald)",
+          fontSize: "20px",
+          color: "#ffffff",
           borderColor: "rgba(68,73,51,0.5)",
         }}
       >
-        <h3
-          className="border-b pb-3 mb-6 uppercase flex items-center gap-2"
-          style={{
-            fontFamily: "var(--font-oswald)",
-            fontSize: "20px",
-            color: "#ffffff",
-            borderColor: "rgba(68,73,51,0.5)",
-          }}
+        <span
+          className="material-symbols-outlined"
+          style={{ color: "#c3f400" }}
         >
-          <span
-            className="material-symbols-outlined"
-            style={{ color: "#c3f400" }}
-          >
-            receipt_long
-          </span>
-          Booking Summary
-        </h3>
+          receipt_long
+        </span>
+        Booking Summary
+      </h3>
 
-        <div className="flex flex-col gap-3 flex-grow mb-8">
+      <div className="flex-1 min-h-0 overflow-y-auto slot-scroll pr-1">
+        <div className="flex flex-col gap-3">
           <div className="flex justify-between items-center">
             <span
               style={{
@@ -145,100 +146,100 @@ export default function BookingSummary({
             className="my-3 border-t"
             style={{ borderColor: "rgba(68,73,51,0.3)" }}
           />
-
-          <div className="flex justify-between items-end">
-            <span
-              style={{
-                fontFamily: "var(--font-oswald)",
-                fontSize: "20px",
-                color: "#e2e2e2",
-              }}
-            >
-              Total Amount
-            </span>
-            <div className="text-right">
-              <span
-                className="block leading-none font-bold"
-                style={{
-                  fontFamily: "var(--font-oswald)",
-                  fontSize: "36px",
-                  color: "#c3f400",
-                }}
-              >
-                {priceDisplay}
-              </span>
-              <span
-                style={{
-                  fontFamily: "var(--font-jetbrains)",
-                  fontSize: "11px",
-                  color: "#c4c9ac",
-                  letterSpacing: "0.08em",
-                }}
-              >
-                VAT INCLUDED
-              </span>
-            </div>
-          </div>
         </div>
+      </div>
 
-        <button
-          onClick={onConfirm}
-          disabled={!hasSlots || isSubmitting}
-          className="w-full py-3 rounded-lg uppercase tracking-wider font-bold transition-all duration-300 active:scale-95 flex items-center justify-center gap-2"
+      <div className="shrink-0 mt-6 mb-6 flex justify-between items-end">
+        <span
           style={{
             fontFamily: "var(--font-oswald)",
-            fontSize: "18px",
-            backgroundColor: hasSlots ? "#c3f400" : "#333535",
-            color: hasSlots ? "#283500" : "#8e9379",
-            cursor: hasSlots && !isSubmitting ? "pointer" : "not-allowed",
-            boxShadow: hasSlots ? "0 0 15px rgba(195,244,0,0.3)" : undefined,
-          }}
-          onMouseEnter={(e) => {
-            if (hasSlots && !isSubmitting) {
-              (e.currentTarget as HTMLElement).style.backgroundColor = "#abd600";
-              (e.currentTarget as HTMLElement).style.boxShadow =
-                "0 0 20px rgba(195,244,0,0.4)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (hasSlots && !isSubmitting) {
-              (e.currentTarget as HTMLElement).style.backgroundColor = "#c3f400";
-              (e.currentTarget as HTMLElement).style.boxShadow =
-                "0 0 15px rgba(195,244,0,0.3)";
-            }
+            fontSize: "20px",
+            color: "#e2e2e2",
           }}
         >
-          {isSubmitting ? (
-            <>
-              <span
-                aria-hidden="true"
-                className="inline-block h-4 w-4 rounded-full border-2 border-current border-t-transparent animate-spin"
-              />
-              PREPARING BOOKING...
-            </>
-          ) : (
-            <>
-              CONFIRM BOOKING
-              <span className="material-symbols-outlined">arrow_forward</span>
-            </>
-          )}
-        </button>
-
-        <p
-          className="text-center mt-3 flex items-center justify-center gap-1"
-          style={{
-            fontFamily: "var(--font-jetbrains)",
-            fontSize: "11px",
-            color: "#c4c9ac",
-            letterSpacing: "0.06em",
-          }}
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>
-            lock
+          Total Amount
+        </span>
+        <div className="text-right">
+          <span
+            className="block leading-none font-bold"
+            style={{
+              fontFamily: "var(--font-oswald)",
+              fontSize: "36px",
+              color: "#c3f400",
+            }}
+          >
+            {priceDisplay}
           </span>
-          SECURE ONLINE BOOKING
-        </p>
+          <span
+            style={{
+              fontFamily: "var(--font-jetbrains)",
+              fontSize: "11px",
+              color: "#c4c9ac",
+              letterSpacing: "0.08em",
+            }}
+          >
+            VAT INCLUDED
+          </span>
+        </div>
       </div>
+
+      <button
+        onClick={onConfirm}
+        disabled={!hasSlots || isSubmitting}
+        className="shrink-0 w-full py-3 rounded-lg uppercase tracking-wider font-bold transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2"
+        style={{
+          fontFamily: "var(--font-oswald)",
+          fontSize: "18px",
+          backgroundColor: hasSlots ? "#c3f400" : "#333535",
+          color: hasSlots ? "#283500" : "#8e9379",
+          cursor: hasSlots && !isSubmitting ? "pointer" : "not-allowed",
+          boxShadow: hasSlots ? "0 0 15px rgba(195,244,0,0.3)" : undefined,
+        }}
+        onMouseEnter={(e) => {
+          if (hasSlots && !isSubmitting) {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "#abd600";
+            (e.currentTarget as HTMLElement).style.boxShadow =
+              "0 0 20px rgba(195,244,0,0.4)";
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (hasSlots && !isSubmitting) {
+            (e.currentTarget as HTMLElement).style.backgroundColor = "#c3f400";
+            (e.currentTarget as HTMLElement).style.boxShadow =
+              "0 0 15px rgba(195,244,0,0.3)";
+          }
+        }}
+      >
+        {isSubmitting ? (
+          <>
+            <span
+              aria-hidden="true"
+              className="inline-block h-4 w-4 rounded-full border-2 border-current border-t-transparent animate-spin"
+            />
+            PREPARING BOOKING...
+          </>
+        ) : (
+          <>
+            CONFIRM BOOKING
+            <span className="material-symbols-outlined">arrow_forward</span>
+          </>
+        )}
+      </button>
+
+      <p
+        className="shrink-0 text-center mt-3 flex items-center justify-center gap-1"
+        style={{
+          fontFamily: "var(--font-jetbrains)",
+          fontSize: "11px",
+          color: "#c4c9ac",
+          letterSpacing: "0.06em",
+        }}
+      >
+        <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>
+          lock
+        </span>
+        SECURE ONLINE BOOKING
+      </p>
     </div>
   );
 }
