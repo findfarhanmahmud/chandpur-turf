@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { usePublicData } from "@/hooks/usePublicData";
 
 const navLinks = [
   { href: "/",          label: "HOME" },
@@ -17,6 +18,8 @@ const navLinks = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { data, fallback } = usePublicData();
+  const phone = data?.settings.phone ?? fallback.settings.phone ?? "01777-240317";
 
   return (
     <header
@@ -76,13 +79,13 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {/* Contact phone quick button (desktop) */}
           <a
-            href="tel:01777240317"
+            href={`tel:${phone.replace(/[^0-9+]/g, "")}`}
             className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded border border-outline-variant/40 text-xs font-jetbrains text-on-surface-variant hover:text-primary-container hover:border-primary-container transition-colors"
           >
             <span className="material-symbols-outlined text-primary-container text-base">
               call
             </span>
-            <span>01777-240317</span>
+            <span>{phone}</span>
           </a>
 
           {/* Book Now CTA */}

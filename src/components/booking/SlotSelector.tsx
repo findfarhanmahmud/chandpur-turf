@@ -1,28 +1,41 @@
 "use client";
 
-import { type TimeSlot, type SlotCategory } from "@/types/booking";
-import { slotsByCategory, categoryConfig } from "@/data/slots";
+import { type TimeSlot, type SlotAvailability } from "@/types/booking";
 import { toggleSlotSelection } from "@/lib/slotSelection";
 import { formatPrice } from "@/lib/utils";
+import { buildCategoryConfigs } from "@/lib/booking/categories";
 
 interface SlotSelectorProps {
+  slots: TimeSlot[];
   selectedSlots: TimeSlot[];
   onSlotsChange: (slots: TimeSlot[]) => void;
+  isLoading?: boolean;
+}
+
+const UNAVAILABLE_LABELS: Record<string, string> = {
+  booked: "SOLD OUT",
+  blocked: "BLOCKED",
+  elapsed: "CLOSED",
+};
+
+function getUnavailableLabel(status: SlotAvailability | undefined): string {
+  if (!status) return "UNAVAILABLE";
+  return UNAVAILABLE_LABELS[status] ?? "UNAVAILABLE";
 }
 
 function SlotColumn({
-  category,
+  categorySlots,
   selectedSlots,
   onSlotSelect,
+  isFeatured,
+  config,
 }: {
-  category: SlotCategory;
+  categorySlots: TimeSlot[];
   selectedSlots: TimeSlot[];
   onSlotSelect: (slot: TimeSlot) => void;
+  isFeatured: boolean;
+  config: { label: string; icon: string; price: number; durationMinutes: number };
 }) {
-  const slots = slotsByCategory[category];
-  const config = categoryConfig[category];
-  const isFeatured = Boolean(config.popular);
-
   return (
     <div
       className="flex flex-col overflow-hidden"
@@ -118,7 +131,7 @@ function SlotColumn({
         className="flex flex-col gap-1 p-1 overflow-y-auto slot-scroll"
         style={{ maxHeight: "300px" }}
       >
-        {slots.map((slot) => {
+        {categorySlots.map((slot) => {
           const isSelected = selectedSlots.some((s) => s.id === slot.id);
           if (slot.isBooked) {
             return (
@@ -148,7 +161,7 @@ function SlotColumn({
                     letterSpacing: "0.04em",
                   }}
                 >
-                  SOLD OUT
+                  {getUnavailableLabel(slot.availability)}
                 </div>
               </div>
             );
@@ -217,9 +230,15 @@ function SlotColumn({
 }
 
 export default function SlotSelector({
+  slots,
   selectedSlots,
   onSlotsChange,
+  isLoading = false,
 }: SlotSelectorProps) {
+  const configs = buildCategoryConfigs(slots);
+  const daySlots = slots.filter((s) => s.category === "day");
+  const nightSlots = slots.filter((s) => s.category === "night");
+
   return (
     <section
       id="slot-section"
@@ -257,26 +276,48 @@ export default function SlotSelector({
         selections are combined into a single booking.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <SlotColumn
-          category="day"
-          selectedSlots={selectedSlots}
-          onSlotSelect={(slot) =>
-            onSlotsChange(
-              toggleSlotSelection(selectedSlots, slot, slotsByCategory[slot.category]),
-            )
-          }
-        />
-        <SlotColumn
-          category="night"
-          selectedSlots={selectedSlots}
-          onSlotSelect={(slot) =>
-            onSlotsChange(
-              toggleSlotSelection(selectedSlots, slot, slotsByCategory[slot.category]),
-            )
-          }
-        />
-      </div>
+      {isLoading && slots.length === 0 ? (
+        <div
+          className="flex items-center justify-center gap-3 py-12"
+          style={{
+            fontFamily: "var(--font-jetbrains)",
+            fontSize: "12px",
+            color: "#c4c9ac",
+            letterSpacing: "0.06em",
+          }}
+        >
+          <span
+            aria-hidden="true"
+            className="inline-block h-5 w-5 rounded-full border-2 border-[#c3f400] border-t-transparent animate-spin"
+          />
+          LOADING AVAILABILITY...
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <SlotColumn
+            categorySlots={daySlots}
+            selectedSlots={selectedSlots}
+            onSlotSelect={(slot) =>
+              onSlotsChange(
+                toggleSlotSelection(selectedSlots, slot, daySlots),
+              )
+            }
+            isFeatured={Boolean(configs.day.popular)}
+            config={configs.day}
+          />
+          <SlotColumn
+            categorySlots={nightSlots}
+            selectedSlots={selectedSlots}
+            onSlotSelect={(slot) =>
+              onSlotsChange(
+                toggleSlotSelection(selectedSlots, slot, nightSlots),
+              )
+            }
+            isFeatured={false}
+            config={configs.night}
+          />
+        </div>
+      )}
     </section>
   );
 }

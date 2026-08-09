@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { categoryConfig } from "@/data/slots";
 import { formatPrice } from "@/lib/utils";
+import { usePublicData } from "@/hooks/usePublicData";
+import { buildCategoryConfigs } from "@/lib/booking/categories";
 
 const quickLinks = [
   { href: "/",        label: "Home" },
@@ -11,27 +12,6 @@ const quickLinks = [
   { href: "/gallery", label: "Gallery" },
   { href: "/about",   label: "About" },
   { href: "/contact", label: "Contact" },
-];
-
-const contactInfo = [
-  {
-    icon: "call",
-    label: "Phone",
-    value: "01777-240317",
-    href: "tel:01777240317",
-  },
-  {
-    icon: "chat",
-    label: "WhatsApp",
-    value: "01856-822363",
-    href: "https://wa.me/8801856822363",
-  },
-  {
-    icon: "location_on",
-    label: "Address",
-    value: "Bangabandhu Road, Chandpur Sadar, Chandpur",
-    href: "https://maps.google.com/?q=Bangabandhu+Road+Chandpur+Sadar+Bangladesh",
-  },
 ];
 
 function ColumnHeading({ children }: { children: React.ReactNode }) {
@@ -47,6 +27,33 @@ function ColumnHeading({ children }: { children: React.ReactNode }) {
 }
 
 export default function Footer() {
+  const { data, fallback } = usePublicData();
+  const settings = data?.settings ?? fallback.settings;
+  const categoryConfig = buildCategoryConfigs(data?.slots ?? fallback.slots);
+
+  const contactInfo = [
+    {
+      icon: "call",
+      label: "Phone",
+      value: settings.phone ?? "01777-240317",
+      href: `tel:${(settings.phone ?? "01777-240317").replace(/[^0-9+]/g, "")}`,
+    },
+    {
+      icon: "chat",
+      label: "WhatsApp",
+      value: settings.whatsapp ?? "01856-822363",
+      href: `https://wa.me/${(settings.booking_whatsapp_international ?? "8801856822363").replace(/[^0-9+]/g, "")}`,
+    },
+    {
+      icon: "location_on",
+      label: "Address",
+      value: settings.location ?? "Bangabandhu Road, Chandpur Sadar, Chandpur",
+      href: `https://maps.google.com/?q=${encodeURIComponent(
+        settings.map_query ?? "Bangabandhu Road Chandpur Sadar Bangladesh",
+      )}`,
+    },
+  ];
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -100,7 +107,7 @@ export default function Footer() {
             {/* Social icons */}
             <div className="flex gap-3 mt-1">
               <a
-                href="https://facebook.com"
+                href={settings.facebook_url ?? "https://facebook.com"}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -112,7 +119,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://instagram.com"
+                href={settings.instagram_url ?? "https://instagram.com"}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -128,7 +135,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://wa.me/8801856822363"
+                href={`https://wa.me/${(settings.booking_whatsapp_international ?? "8801856822363").replace(/[^0-9+]/g, "")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
@@ -212,7 +219,7 @@ export default function Footer() {
                 <span className="font-bold text-primary font-oswald text-sm">{formatPrice(categoryConfig.night.price)}</span>
               </div>
               <p className="text-[11px] text-on-surface-variant font-jetbrains mt-1">
-                Open 7 days a week: 5:00 AM – 3:30 AM
+                Open 7 days a week: {settings.hours ?? "5:00 AM \u2013 3:30 AM"}
               </p>
             </div>
 

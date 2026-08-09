@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import SectionHeading from "@/components/shared/SectionHeading";
-import { slotsByCategory, categoryConfig, SLOT_DURATION_MINUTES } from "@/data/slots";
 import type { SlotCategory } from "@/types/booking";
 import { formatPrice } from "@/lib/utils";
+import { usePublicData } from "@/hooks/usePublicData";
+import { buildCategoryConfigs } from "@/lib/booking/categories";
 
 interface SlotRow {
   time: string;
@@ -15,6 +16,7 @@ interface SlotCardProps {
   title: string;
   icon: string;
   priceDisplay: string;
+  durationMinutes: number;
   slots: SlotRow[];
   isFeatured?: boolean;
   headerBg: string;
@@ -27,6 +29,7 @@ function SlotCard({
   title,
   icon,
   priceDisplay,
+  durationMinutes,
   slots,
   isFeatured,
   headerBg,
@@ -123,7 +126,7 @@ function SlotCard({
               fontWeight: 400,
             }}
           >
-            / {SLOT_DURATION_MINUTES} MIN
+            / {durationMinutes} MIN
           </span>
         </p>
       </div>
@@ -204,14 +207,19 @@ const CARD_STYLES: Record<SlotCategory, {
   night: { headerBg: "#111622", priceBg: "#0c0f17", iconColor: "#ffffff" },
 };
 
-function buildSlotRows(category: SlotCategory): SlotRow[] {
-  return slotsByCategory[category].map((slot) => ({
-    time: `${slot.time} – ${slot.endTime}`,
-    price: formatPrice(slot.price),
-  }));
-}
-
 export default function PricingSection() {
+  const { data, fallback } = usePublicData();
+  const slots = data?.slots ?? fallback.slots;
+  const categoryConfig = buildCategoryConfigs(slots);
+
+  const buildSlotRows = (category: SlotCategory): SlotRow[] =>
+    slots
+      .filter((s) => s.category === category)
+      .map((slot) => ({
+        time: `${slot.time} \u2013 ${slot.endTime}`,
+        price: formatPrice(slot.price),
+      }));
+
   return (
     <section
       id="pricing"
@@ -225,7 +233,7 @@ export default function PricingSection() {
       <div style={{ maxWidth: "1536px", margin: "0 auto" }}>
         <SectionHeading
           title="SLOT TIMING & PRICING"
-          subtitle={`(${SLOT_DURATION_MINUTES} MINUTES)`}
+          subtitle={`(${categoryConfig.day.durationMinutes} MINUTES)`}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -234,6 +242,7 @@ export default function PricingSection() {
             title={categoryConfig.day.label}
             icon={categoryConfig.day.icon}
             priceDisplay={formatPrice(categoryConfig.day.price)}
+            durationMinutes={categoryConfig.day.durationMinutes}
             slots={buildSlotRows("day")}
             isFeatured
             headerBg={CARD_STYLES.day.headerBg}
@@ -262,6 +271,7 @@ export default function PricingSection() {
             title={categoryConfig.night.label}
             icon={categoryConfig.night.icon}
             priceDisplay={formatPrice(categoryConfig.night.price)}
+            durationMinutes={categoryConfig.night.durationMinutes}
             slots={buildSlotRows("night")}
             headerBg={CARD_STYLES.night.headerBg}
             priceBg={CARD_STYLES.night.priceBg}

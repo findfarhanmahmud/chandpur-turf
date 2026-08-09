@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import type { PublicGalleryItem } from "@/types/booking";
+import { usePublicData } from "@/hooks/usePublicData";
 
 export interface GalleryItem {
   id: string;
@@ -19,6 +21,7 @@ export interface GalleryItem {
   caption: string;
 }
 
+// Static fallback gallery (used only when the database is unreachable).
 export const galleryItems: GalleryItem[] = [
   {
     id: "g1",
@@ -78,27 +81,42 @@ export const galleryItems: GalleryItem[] = [
   },
 ];
 
-const categories = [
-  { id: "all", label: "All Photos" },
-  { id: "match", label: "Football Match" },
-  { id: "turf", label: "Artificial Turf" },
-  { id: "night", label: "Night Match" },
-  { id: "lights", label: "Stadium Lights" },
-  { id: "celebration", label: "Team Celebration" },
-  { id: "training", label: "Training Session" },
-  { id: "goal", label: "Goal Post" },
-  { id: "action", label: "Players in Action" },
-];
+// Known category labels; unknown categories fall back to a readable slug.
+const CATEGORY_LABELS: Record<string, string> = {
+  match: "Football Match",
+  turf: "Artificial Turf",
+  night: "Night Match",
+  lights: "Stadium Lights",
+  celebration: "Team Celebration",
+  training: "Training Session",
+  goal: "Goal Post",
+  action: "Players in Action",
+};
+
+function categoryLabel(id: string): string {
+  return CATEGORY_LABELS[id] ?? id.replace(/-/g, " ");
+}
 
 export default function GalleryContent({ isHomepage = false }: { isHomepage?: boolean }) {
+  const { data, fallback } = usePublicData();
+  const items: PublicGalleryItem[] = data?.gallery ?? fallback.gallery;
+
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
+  const categories = useMemo(() => {
+    const unique = Array.from(new Set(items.map((item) => item.category)));
+    return [
+      { id: "all", label: "All Photos" },
+      ...unique.map((id) => ({ id, label: categoryLabel(id) })),
+    ];
+  }, [items]);
+
   const filteredItems = isHomepage
-    ? galleryItems.slice(0, 6)
+    ? items.slice(0, 6)
     : activeCategory === "all"
-    ? galleryItems
-    : galleryItems.filter((item) => item.category === activeCategory);
+      ? items
+      : items.filter((item) => item.category === activeCategory);
 
   const closeLightbox = useCallback(() => setSelectedIndex(null), []);
 
@@ -109,7 +127,7 @@ export default function GalleryContent({ isHomepage = false }: { isHomepage?: bo
         return (current + dir + filteredItems.length) % filteredItems.length;
       });
     },
-    [filteredItems.length]
+    [filteredItems.length],
   );
 
   useEffect(() => {
@@ -132,7 +150,7 @@ export default function GalleryContent({ isHomepage = false }: { isHomepage?: bo
   return (
     <div className="flex flex-col gap-8">
       {/* Category filter tabs (only on full gallery page) */}
-      {!isHomepage && (
+      {!isHomepage && categories.length > 1 && (
         <div className="flex flex-wrap justify-center gap-2.5">
           {categories.map((cat) => (
             <button
@@ -151,52 +169,60 @@ export default function GalleryContent({ isHomepage = false }: { isHomepage?: bo
       )}
 
       {/* Gallery Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredItems.map((item, index) => (
-          <div
-            key={item.id}
-            onClick={() => setSelectedIndex(index)}
-            className="group relative rounded-xl overflow-hidden bg-surface-container border border-outline-variant/30 shadow-lg cursor-pointer h-[260px] sm:h-[280px] hover:border-primary-container/50 hover:shadow-xl transition-all"
-          >
-            <Image
-              src={item.imageUrl}
-              alt={item.title}
-              fill
-              loading="lazy"
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-            {/* Hover overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
+      {filteredItems.length === 0 ? (
+        <p
+          className="text-center py-16 text-on-surface-variant font-jetbrains text-xs tracking-widest"
+        >
+          No photos available yet. Check back soon!
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredItems.map((item, index) => (
+            <div
+              key={item.id}
+              onClick={() => setSelectedIndex(index)}
+              className="group relative rounded-xl overflow-hidden bg-surface-container border border-outline-variant/30 shadow-lg cursor-pointer h-[260px] sm:h-[280px] hover:border-primary-container/50 hover:shadow-xl transition-all"
+            >
+              <Image
+                src={item.imageUrl}
+                alt={item.title}
+                fill
+                loading="lazy"
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+              {/* Hover overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
 
-            {/* Content badge & title */}
-            <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
-              <div className="flex justify-between items-start">
-                <span className="py-1 px-3 bg-surface-dim/80 backdrop-blur-md text-primary-container font-jetbrains text-[10px] uppercase font-bold rounded-full border border-primary-container/30">
-                  {categories.find((c) => c.id === item.category)?.label ?? item.category}
-                </span>
-                <span
-                  className="material-symbols-outlined text-white opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all"
-                  style={{ fontSize: "24px", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}
-                >
-                  zoom_in
-                </span>
-              </div>
-              <div>
-                <h3
-                  className="text-xl font-bold uppercase text-primary mb-1 group-hover:text-primary-container transition-colors"
-                  style={{ fontFamily: "var(--font-oswald)" }}
-                >
-                  {item.title}
-                </h3>
-                <p className="font-work-sans text-xs text-on-surface-variant line-clamp-2">
-                  {item.caption}
-                </p>
+              {/* Content badge & title */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
+                <div className="flex justify-between items-start">
+                  <span className="py-1 px-3 bg-surface-dim/80 backdrop-blur-md text-primary-container font-jetbrains text-[10px] uppercase font-bold rounded-full border border-primary-container/30">
+                    {categoryLabel(item.category)}
+                  </span>
+                  <span
+                    className="material-symbols-outlined text-white opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all"
+                    style={{ fontSize: "24px", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}
+                  >
+                    zoom_in
+                  </span>
+                </div>
+                <div>
+                  <h3
+                    className="text-xl font-bold uppercase text-primary mb-1 group-hover:text-primary-container transition-colors"
+                    style={{ fontFamily: "var(--font-oswald)" }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p className="font-work-sans text-xs text-on-surface-variant line-clamp-2">
+                    {item.caption}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Lightbox Modal */}
       {selectedItem && selectedIndex !== null && (

@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { facilities } from "@/data/facilities";
 import SectionHeading from "@/components/shared/SectionHeading";
 import FacilityCard from "@/components/home/FacilityCard";
 import { useInView } from "@/hooks/useInView";
+import { usePublicData } from "@/hooks/usePublicData";
 
 export default function FacilitiesSection() {
   const { ref, inView } = useInView<HTMLElement>(0.08);
+  const { data, fallback } = usePublicData();
+  const facilities = data?.facilities ?? fallback.facilities;
 
   return (
     <section
@@ -51,7 +53,7 @@ export default function FacilitiesSection() {
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 xl:grid-cols-4">
           {facilities.map((facility, index) => (
             <FacilityCard
-              key={facility.label}
+              key={facility.id}
               facility={facility}
               index={index}
               inView={inView}

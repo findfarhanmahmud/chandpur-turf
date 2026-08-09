@@ -2,10 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { categoryConfig } from "@/data/slots";
+import { usePublicData } from "@/hooks/usePublicData";
+import { buildCategoryConfigs } from "@/lib/booking/categories";
 import { formatPrice } from "@/lib/utils";
 
 export default function HeroSection() {
+  const { data, fallback } = usePublicData();
+  const slots = data?.slots ?? fallback.slots;
+  const categoryConfig = buildCategoryConfigs(slots);
   return (
     <section
       id="home"

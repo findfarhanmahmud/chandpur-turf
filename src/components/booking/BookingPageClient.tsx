@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import DateSelector from "@/components/booking/DateSelector";
 import SlotSelector from "@/components/booking/SlotSelector";
 import DetailsForm from "@/components/booking/DetailsForm";
 import BookingSummary from "@/components/booking/BookingSummary";
 import BookingNotice from "@/components/booking/BookingNotice";
 import { type TimeSlot, type BookingFormData, type BookingFormErrors } from "@/types/booking";
-import { createBookingRecord } from "@/lib/booking";
 import { validateBookingForm } from "@/lib/validation";
 import { submitBooking } from "@/lib/bookingService";
+import { toISODate } from "@/lib/booking";
+import { applyAvailability, buildAvailabilityMap } from "@/lib/booking/slots";
+import { PUBLIC_FALLBACK_DATA } from "@/hooks/usePublicData";
+import type { SlotAvailabilityRow } from "@/types/database";
 
 interface BookingNoticeState {
   type: "success" | "error";
@@ -25,8 +28,13 @@ export default function BookingPageClient() {
     return today;
   });
 
-  const [selectedSlots, setSelectedSlots] = useState<TimeSlot[]>([]);
+  // Base slot definitions (from the database) + per-date availability merged in.
+  const [slots, setSlots] = useState<TimeSlot[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(true);
+  const [availabilityLoading, setAvailabilityLoading] = useState(true);
+  const baseSlotsRef = useRef<TimeSlot[]>([]);
 
+  const [selectedSlots, setSelectedSlots] = useState<TimeSlot[]>([]);
   const [formData, setFormData] = useState<BookingFormData>({
     name: "",
     phone: "",
@@ -38,6 +46,59 @@ export default function BookingPageClient() {
   const [formErrors, setFormErrors] = useState<BookingFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notice, setNotice] = useState<BookingNoticeState | null>(null);
+
+  const loadAvailability = useCallback(async (date: Date) => {
+    setAvailabilityLoading(true);
+    const base = baseSlotsRef.current;
+    try {
+      const res = await fetch(
+        `/api/public/availability?date=${toISODate(date)}`,
+        { cache: "no-store" },
+      );
+      if (!res.ok) throw new Error("availability failed");
+      const rows = (await res.json()) as SlotAvailabilityRow[];
+      setSlots(applyAvailability(base, buildAvailabilityMap(rows)));
+    } catch {
+      setSlots(base.map((s) => ({ ...s, availability: "available", isBooked: false })));
+    } finally {
+      setAvailabilityLoading(false);
+    }
+  }, []);
+
+  // Initial load: bootstrap slot definitions, then availability for the date.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/public/bootstrap", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("bootstrap failed"))))
+      .then((data: typeof PUBLIC_FALLBACK_DATA) => {
+        if (cancelled) return;
+        const base = data.slots.length > 0 ? data.slots : PUBLIC_FALLBACK_DATA.slots;
+        baseSlotsRef.current = base;
+        setSlots(base);
+        setSlotsLoading(false);
+        const date = selectedDate ?? new Date();
+        void loadAvailability(date);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        const base = PUBLIC_FALLBACK_DATA.slots;
+        baseSlotsRef.current = base;
+        setSlots(base);
+        setSlotsLoading(false);
+        const date = selectedDate ?? new Date();
+        void loadAvailability(date);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+    setSelectedSlots([]);
+    void loadAvailability(date);
+  };
 
   const handleFormChange = (field: keyof BookingFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -68,19 +129,19 @@ export default function BookingPageClient() {
     setFormErrors({});
     if (!selectedDate || selectedSlots.length === 0) return;
 
-    const booking = createBookingRecord({
+    setIsSubmitting(true);
+    const payload = {
       customerName: formData.name.trim(),
       phoneNumber: formData.phone.trim(),
       whatsappNumber: formData.whatsapp.trim() || formData.phone.trim(),
       teamName: formData.teamName.trim(),
       notes: formData.notes.trim(),
-      bookingDate: selectedDate,
-      slots: selectedSlots,
-    });
+      bookingDate: toISODate(selectedDate),
+      slotIds: selectedSlots.map((slot) => slot.id),
+    };
 
-    setIsSubmitting(true);
     const [result] = await Promise.all([
-      submitBooking(booking),
+      submitBooking(payload),
       new Promise<void>((resolve) => setTimeout(resolve, MIN_SUBMIT_FEEDBACK_MS)),
     ]);
     setIsSubmitting(false);
@@ -95,12 +156,14 @@ export default function BookingPageClient() {
         <div className="lg:col-span-8 flex flex-col gap-8">
           <DateSelector
             selectedDate={selectedDate}
-            onDateSelect={setSelectedDate}
+            onDateSelect={handleDateSelect}
           />
 
           <SlotSelector
+            slots={slots}
             selectedSlots={selectedSlots}
             onSlotsChange={setSelectedSlots}
+            isLoading={slotsLoading || availabilityLoading}
           />
 
           <DetailsForm

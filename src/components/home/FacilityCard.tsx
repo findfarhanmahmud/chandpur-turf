@@ -1,7 +1,9 @@
-import type { Facility } from "@/data/facilities";
+import { createElement } from "react";
+import type { PublicFacility } from "@/types/booking";
+import { getFacilityIcon } from "@/lib/facility-icons";
 
 interface FacilityCardProps {
-  facility: Facility;
+  facility: PublicFacility;
   index: number;
   inView: boolean;
 }
@@ -13,7 +15,7 @@ export default function FacilityCard({
   index,
   inView,
 }: FacilityCardProps) {
-  const Icon = facility.icon;
+  const Icon = getFacilityIcon(facility.icon);
 
   return (
     <div
@@ -31,12 +33,12 @@ export default function FacilityCard({
           border: "1px solid rgba(68,73,51,0.4)",
         }}
       >
-        <Icon
-          className="mb-4 text-white transition-colors duration-300 group-hover:text-primary-container"
-          size={52}
-          strokeWidth={1.5}
-          aria-hidden="true"
-        />
+        {createElement(Icon, {
+          className: "mb-4 text-white transition-colors duration-300 group-hover:text-primary-container",
+          size: 52,
+          strokeWidth: 1.5,
+          "aria-hidden": true,
+        })}
         <h3
           className="uppercase text-on-surface"
           style={{

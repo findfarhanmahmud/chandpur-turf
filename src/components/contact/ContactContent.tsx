@@ -3,77 +3,91 @@
 import { useState } from "react";
 import Image from "next/image";
 import SectionHeading from "@/components/shared/SectionHeading";
-
-const contactCards = [
-  {
-    icon: "call",
-    title: "Phone",
-    value: "01777-240317",
-    hint: "Direct call for slot booking & inquiries",
-    action: "Call Now",
-    href: "tel:01777240317",
-    external: false,
-  },
-  {
-    icon: "chat",
-    title: "WhatsApp",
-    value: "01856-822363",
-    hint: "Send us a message for quick assistance",
-    action: "Chat Now",
-    href: "https://wa.me/8801856822363",
-    external: true,
-  },
-  {
-    icon: "location_on",
-    title: "Address",
-    value: "Bangabandhu Road, Chandpur Sadar, Chandpur",
-    hint: "Easily accessible from all parts of Chandpur",
-    action: "Get Directions",
-    href: "https://maps.google.com/?q=Bangabandhu+Road+Chandpur+Sadar+Bangladesh",
-    external: true,
-  },
-  {
-    icon: "groups",
-    title: "Facebook",
-    value: "Chandpur Turf",
-    hint: "Follow us for updates, leagues & events",
-    action: "Visit Page",
-    href: "https://facebook.com",
-    external: true,
-  },
-  {
-    icon: "photo_camera",
-    title: "Instagram",
-    value: "@chandpurturf",
-    hint: "Match photos, highlights & behind the scenes",
-    action: "Follow Us",
-    href: "https://instagram.com",
-    external: true,
-  },
-];
-
-const actionButtons = [
-  {
-    icon: "call",
-    label: "Call Now",
-    href: "tel:01777240317",
-    external: false,
-  },
-  {
-    icon: "chat",
-    label: "WhatsApp",
-    href: "https://wa.me/8801856822363",
-    external: true,
-  },
-  {
-    icon: "directions",
-    label: "Get Directions",
-    href: "https://www.google.com/maps/dir/?api=1&destination=Bangabandhu+Road+Chandpur+Sadar+Bangladesh",
-    external: true,
-  },
-];
+import { usePublicData } from "@/hooks/usePublicData";
 
 export default function ContactContent() {
+  const { data, fallback } = usePublicData();
+  const settings = data?.settings ?? fallback.settings;
+
+  const phone = settings.phone ?? "01777-240317";
+  const whatsapp = settings.whatsapp ?? "01856-822363";
+  const whatsappIntl = (settings.booking_whatsapp_international ?? "8801856822363").replace(/[^0-9+]/g, "");
+  const location = settings.location ?? "Foridganj-Mission Bypass Road, Chandpur Sadar, Chandpur";
+  const addressShort = settings.address_short ?? "Foridganj-Mission Bypass Road, Chandpur Sadar";
+  const mapQuery = settings.map_query ?? "Foridganj-Mission Bypass Road Chandpur Sadar Bangladesh";
+  const facebookUrl = settings.facebook_url ?? "https://facebook.com";
+  const instagramUrl = settings.instagram_url ?? "https://instagram.com";
+  const hours = settings.hours ?? "5:00 AM - 3:30 AM";
+
+  const contactCards = [
+    {
+      icon: "call",
+      title: "Phone",
+      value: phone,
+      hint: "Direct call for slot booking & inquiries",
+      action: "Call Now",
+      href: `tel:${phone.replace(/[^0-9+]/g, "")}`,
+      external: false,
+    },
+    {
+      icon: "chat",
+      title: "WhatsApp",
+      value: whatsapp,
+      hint: "Send us a message for quick assistance",
+      action: "Chat Now",
+      href: `https://wa.me/${whatsappIntl}`,
+      external: true,
+    },
+    {
+      icon: "location_on",
+      title: "Address",
+      value: location,
+      hint: "Easily accessible from all parts of Chandpur",
+      action: "Get Directions",
+      href: `https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`,
+      external: true,
+    },
+    {
+      icon: "groups",
+      title: "Facebook",
+      value: settings.facebook ?? "Chandpur Turf",
+      hint: "Follow us for updates, leagues & events",
+      action: "Visit Page",
+      href: facebookUrl,
+      external: true,
+    },
+    {
+      icon: "photo_camera",
+      title: "Instagram",
+      value: settings.instagram ? `@${settings.instagram}` : "@chandpurturf",
+      hint: "Match photos, highlights & behind the scenes",
+      action: "Follow Us",
+      href: instagramUrl,
+      external: true,
+    },
+  ];
+
+  const actionButtons = [
+    {
+      icon: "call",
+      label: "Call Now",
+      href: `tel:${phone.replace(/[^0-9+]/g, "")}`,
+      external: false,
+    },
+    {
+      icon: "chat",
+      label: "WhatsApp",
+      href: `https://wa.me/${whatsappIntl}`,
+      external: true,
+    },
+    {
+      icon: "directions",
+      label: "Get Directions",
+      href: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`,
+      external: true,
+    },
+  ];
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -254,7 +268,7 @@ export default function ContactContent() {
                     Find Us On Google Maps
                   </h3>
                   <p className="text-on-surface-variant text-xs font-work-sans">
-                    Bangabandhu Road, Chandpur Sadar
+                    {addressShort}
                   </p>
                 </div>
               </div>
@@ -262,7 +276,7 @@ export default function ContactContent() {
 
             <div className="relative mt-4 h-[280px] sm:h-[320px] w-full bg-surface-container-high">
               <iframe
-                src="https://www.google.com/maps?q=Bangabandhu%20Road%20Chandpur%20Sadar%20Bangladesh&z=14&output=embed"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=14&output=embed`}
                 className="absolute inset-0 w-full h-full border-0"
                 loading="lazy"
                 title="Chandpur Turf location on Google Maps"
@@ -273,7 +287,7 @@ export default function ContactContent() {
 
             <div className="p-6 flex flex-wrap gap-3">
               <a
-                href="https://maps.google.com/?q=Bangabandhu+Road+Chandpur+Sadar+Bangladesh"
+                href={`https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-primary-container text-on-primary font-oswald uppercase font-bold text-sm rounded hover:bg-primary-fixed transition-colors"
@@ -282,7 +296,7 @@ export default function ContactContent() {
                 Open Map
               </a>
               <a
-                href="https://www.google.com/maps/dir/?api=1&destination=Bangabandhu+Road+Chandpur+Sadar+Bangladesh"
+                href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-surface-bright/40 text-primary font-oswald uppercase font-bold text-sm rounded border border-outline-variant/50 hover:bg-surface-bright/80 transition-colors"
@@ -309,7 +323,7 @@ export default function ContactContent() {
               Monday – Sunday (7 Days a Week)
             </p>
             <p className="font-jetbrains text-primary-container font-semibold text-sm">
-              5:00 AM – 3:30 AM (Including Night Floodlight Matches)
+              {hours} (Including Night Floodlight Matches)
             </p>
           </div>
         </div>

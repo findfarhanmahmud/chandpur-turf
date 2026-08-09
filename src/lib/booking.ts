@@ -1,8 +1,8 @@
-import { formatDate } from '@/lib/utils';
-import { type BookingRecord, type SlotCategory, type TimeSlot } from '@/types/booking';
+import { formatDate } from "@/lib/utils";
+import { type BookingRecord, type SlotCategory, type TimeSlot } from "@/types/booking";
 
 export const BOOKING_DURATION_MINUTES = 90;
-export const BOOKING_STATUS = 'Pending' as const;
+export const BOOKING_STATUS = "pending" as const;
 
 export interface CreateBookingInput {
   customerName: string;
@@ -37,14 +37,17 @@ export function createBookingRecord(input: CreateBookingInput): BookingRecord {
 
 // Combines consecutive slots into one continuous range, e.g. "5:00 PM - 9:30 PM".
 export function combineTimeRange(slots: TimeSlot[]): string {
-  if (slots.length === 0) return '';
+  if (slots.length === 0) return "";
   const first = slots[0];
   const last = slots[slots.length - 1];
   return `${first.time} - ${last.endTime}`;
 }
 
 export function getTotalDurationMinutes(slots: TimeSlot[]): number {
-  return slots.length * BOOKING_DURATION_MINUTES;
+  return slots.reduce(
+    (sum, slot) => sum + (slot.durationMinutes ?? BOOKING_DURATION_MINUTES),
+    0,
+  );
 }
 
 export function getTotalPrice(slots: TimeSlot[]): number {
@@ -58,20 +61,20 @@ export function generateBookingId(): string {
 // Local date -> "YYYY-MM-DD" (avoids UTC timezone drift).
 export function toISODate(date: Date): string {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 
 // "YYYY-MM-DD" -> human-readable local date.
 export function formatBookingDate(isoDate: string): string {
-  const [year, month, day] = isoDate.split('-').map(Number);
+  const [year, month, day] = isoDate.split("-").map(Number);
   return formatDate(new Date(year, month - 1, day));
 }
 
 const SLOT_CATEGORY_LABELS: Record<SlotCategory, string> = {
-  day: 'Day',
-  night: 'Night',
+  day: "Day",
+  night: "Night",
 };
 
 export function getSlotCategoryLabel(category: SlotCategory): string {
