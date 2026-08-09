@@ -11,9 +11,30 @@ type SupabaseAdminClient = ReturnType<typeof createAdminClient>;
 // Resolves the current admin from the HttpOnly session cookie + the
 // admin_sessions store. Returns null for anonymous visitors and expired or
 // revoked sessions.
+//
+// Admin login is disabled: when there is no real session we automatically
+// authenticate as the default admin so the panel is freely accessible.
 export const getAdminSession = cache(
   async (): Promise<AdminSession | null> => {
-    return readAdminSession();
+    const session = await readAdminSession();
+    if (session) return session;
+
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("admin_users")
+      .select("id, username, display_name, role")
+      .eq("username", "admin123")
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (error || !data) return null;
+
+    return {
+      userId: data.id,
+      username: data.username,
+      displayName: data.display_name,
+      role: data.role === "super_admin" ? "super_admin" : "admin",
+    };
   },
 );
 
