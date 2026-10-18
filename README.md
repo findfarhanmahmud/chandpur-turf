@@ -1,165 +1,76 @@
-# Student Nexus BD
+# Chandpur Turf
 
-**Building a connected ecosystem where students discover teammates, collaborate on projects, and find opportunities to turn their ideas into reality.**
+**A deployed web application for Chandpur Turf.**
 
-Student Nexus BD is an ongoing student-led software project designed to connect ambitious students in Bangladesh through collaboration, skill discovery, projects, and opportunities. The long-term vision is to grow beyond a conventional student networking platform into an ecosystem where students can find collaborators, build meaningful projects, participate in competitions, and grow together.
+Chandpur Turf is a web development project built to bring the turf's online presence into one accessible web experience. The project is deployed on Vercel and can be explored directly through its public website.
 
-> **Project status: Under active development.** Features, database availability, and overall functionality may change as development continues.
+**Live Website:** https://chandpurturf.vercel.app
 
-## About the Project
+## Live Demo
 
-Finding the right people to work with can be difficult, especially for students interested in programming, artificial intelligence, cybersecurity, research, entrepreneurship, and competitions.
+Visit the deployed application:
 
-Student Nexus BD aims to bridge this gap by providing a shared platform where students can discover people with complementary skills, connect with potential teammates, collaborate on projects, and explore opportunities.
+**[chandpurturf.vercel.app](https://chandpurturf.vercel.app)**
 
-The project initially focuses on students in Bangladesh, with a long-term vision of supporting a broader international student community.
+The public-facing website is online. Please note that the administrative panel is currently disabled in the production deployment, so admin-only functionality is unavailable through the live demo.
 
-## Key Features
+## Project Overview
 
-The platform includes or is being developed around the following features:
+This project demonstrates practical experience in building, deploying, and maintaining a web application for a real-world use case.
 
-- **Find Teammates** — Discover students based on their profiles, skills, interests, and backgrounds.
-- **Profiles** — Showcase personal information, skills, interests, and achievements.
-- **Connections** — Connect with other students and build a collaboration network.
-- **Teams** — Organize students around shared goals and projects.
-- **Projects** — Create projects, discover collaborators, and recruit team members.
-- **Applications** — Apply to join projects and manage application statuses.
-- **Opportunities** — Discover internships, competitions, scholarships, fellowships, jobs, workshops, and more.
-- **Community** — Participate in discussions around shared interests and technical fields.
-- **Messaging** — Communicate with other users for collaboration.
-- **Notifications** — Receive updates about relevant activity, applications, and interactions.
-- **Resources** — Access useful learning and development resources.
-- **Achievements** — Showcase accomplishments and milestones.
-- **Analytics** — Explore activity and progress through a dedicated dashboard.
-- **Authentication** — Account access and protected application features using Supabase Auth.
+Rather than being limited to a local development environment, Chandpur Turf has been deployed to a publicly accessible URL, allowing visitors and recruiters to explore the available website experience directly.
 
-Feature availability and completeness may vary while development and testing continue.
+## Deployment Status
+
+| Component | Status |
+|---|---|
+| Public website | Deployed on Vercel |
+| Live URL | Available |
+| Administrative panel | Disabled in production |
+| Source code | Available in this repository |
+
+**Important:** The disabled administrative panel is a deliberate production configuration. Its functionality cannot be evaluated through the public demo.
 
 ## Technology Stack
 
-The project uses the following technologies:
+The exact technologies and dependencies used in this project are documented in the source code and project configuration files. See `package.json` and the relevant application directories for implementation details.
 
-| Technology | Purpose |
-|---|---|
-| Next.js | Application framework |
-| React | User interface |
-| TypeScript | Type safety and maintainability |
-| Supabase | Backend services and database |
-| PostgreSQL | Relational data storage |
-| Supabase Auth | Authentication |
-| Supabase Storage | File and avatar storage |
-| Supabase Realtime | Live updates and notifications |
-| Git & GitHub | Version control and collaboration |
+## Run Locally
 
-## Development Status
+To explore the source code and run the project locally:
 
-Student Nexus BD is an active work in progress. Development focuses on improving the user experience, strengthening backend functionality, fixing bugs, improving database consistency, and making the platform more reliable and secure.
+1. Clone this repository:
 
-Current development priorities include:
+   ```bash
+   git clone <YOUR_GITHUB_REPOSITORY_URL>
+   ```
 
-- Improving profile navigation and user identity handling.
-- Strengthening opportunity deadline and application validation.
-- Refining project application and notification workflows.
-- Improving database reliability and access control.
-- Testing application behavior across different user accounts.
-- Preparing the application for a more reliable public release.
+2. Navigate to the project directory:
 
-Some features may be incomplete, change during development, or behave unexpectedly.
+   ```bash
+   cd <YOUR_PROJECT_DIRECTORY>
+   ```
 
-## Live Database Availability
+3. Install dependencies using the package manager appropriate for the project.
 
-**Please note:** The application uses Supabase for its backend and database. The database or associated backend services may occasionally be unavailable because the hosted project may be paused or turned off during development, maintenance, or periods of inactivity.
+4. Configure the required environment variables using the project's configuration and documentation.
 
-When this happens, some features may fail to load or work correctly, including login, profiles, projects, opportunities, and notifications.
+5. Start the development server using the appropriate script defined in `package.json`.
 
-If the application appears broken or data does not load, the issue may be temporary backend unavailability rather than a problem with the user interface itself.
+Refer to the project configuration files for the exact setup requirements.
 
-I am continuing to improve the application's reliability as development progresses. Thank you for your patience.
+## Why This Project?
 
-## Running Locally
+Chandpur Turf is part of my practical software development work. It reflects my experience taking a web application beyond local development and making it accessible through a live deployment.
 
-You can explore the project locally if you have the required development tools and access to a configured Supabase project.
+The repository provides an opportunity to review the project's implementation, source code, and development decisions.
 
-### Prerequisites
+## Feedback
 
-- Node.js and npm
-- Git
-- A Supabase project
-- Supabase project URL and appropriate API keys
-
-### Installation
-
-Clone the repository:
-
-```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd startup
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Create a `.env.local` file in the application root and configure the environment variables required by the project.
-
-For example, a typical Supabase configuration may look like:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-**Important:** Check the project's actual environment-variable names before running the application. The example above is illustrative and may need to be adjusted to match the current codebase.
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-For a production build, run:
-
-```bash
-npm run build
-```
-
-### Database Configuration
-
-A working Supabase backend is required for database-dependent features. Depending on the current project setup, you may also need to apply the database migrations and configure authentication, storage buckets, and Row Level Security (RLS) policies.
-
-Never commit private service-role keys, passwords, or other secrets to GitHub.
-
-## Project Vision
-
-The long-term goal is to make student collaboration easier and more accessible.
-
-Imagine a student preparing for a hackathon who needs a developer, a designer, and someone with business skills. Or a cybersecurity enthusiast looking for teammates for a Capture the Flag competition. Or an aspiring researcher searching for people who share the same interests.
-
-Student Nexus BD aims to help these people find one another and turn individual ambitions into collaborative achievements.
-
-The vision extends beyond profiles and connections: **discover people, form teams, build projects, pursue opportunities, and grow together.**
-
-## Contributions and Feedback
-
-Student Nexus BD is still evolving. Feedback, bug reports, feature suggestions, and constructive technical discussion are welcome.
-
-If you encounter a problem, please include:
-- What you were trying to do.
-- The steps needed to reproduce the issue.
-- Any relevant error message.
-- Whether the issue appears related to database availability.
-
-Please avoid sharing passwords, API secrets, or private user information in issues.
-
-## Disclaimer
-
-This repository represents an ongoing development project. It is not yet a guarantee of production-level availability or reliability. Features, architecture, and documentation may evolve as the project develops.
+Feedback and technical discussions are welcome. Feel free to explore the repository and review the implementation.
 
 ---
 
-**Student Nexus BD**  
-*Connecting students. Building teams. Creating possibilities.*
+**Live Demo:** https://chandpurturf.vercel.app
+
+**Repository:** Chandpur Turf — source code and implementation.
